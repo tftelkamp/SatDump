@@ -278,43 +278,43 @@ if(PLUGIN_SIMD_AVX2)
 endif()
 
 # ##############################################################################
-option(PLUGIN_AIRSPY_SDR_SUPPORT "Enable Airspy SDR Support plugin" ON)
+option(PLUGIN_AIRSPY_SDR_SUPPORT "Enable Airspy SDR Support plugin" OFF)
 
 if(PLUGIN_AIRSPY_SDR_SUPPORT)
   add_subdirectory(sdr_sources/airspy_sdr_support)
 endif()
 
-option(PLUGIN_AIRSPYHF_SDR_SUPPORT "Enable AirspyHF SDR Support plugin" ON)
+option(PLUGIN_AIRSPYHF_SDR_SUPPORT "Enable AirspyHF SDR Support plugin" OFF)
 
 if(PLUGIN_AIRSPYHF_SDR_SUPPORT)
   add_subdirectory(sdr_sources/airspyhf_sdr_support)
 endif()
 
-option(PLUGIN_HACKRF_SDR_SUPPORT "Enable HackRF SDR Support plugin" ON)
+option(PLUGIN_HACKRF_SDR_SUPPORT "Enable HackRF SDR Support plugin" OFF)
 
 if(PLUGIN_HACKRF_SDR_SUPPORT)
   add_subdirectory(sdr_sources/hackrf_sdr_support)
 endif()
 
-option(PLUGIN_LIMESDR_SDR_SUPPORT "Enable LimeSDR SDR Support plugin" ON)
+option(PLUGIN_LIMESDR_SDR_SUPPORT "Enable LimeSDR SDR Support plugin" OFF)
 
 if(PLUGIN_LIMESDR_SDR_SUPPORT)
   add_subdirectory(sdr_sources/limesdr_sdr_support)
 endif()
 
-option(PLUGIN_SDRPLAY_SDR_SUPPORT "Enable SDRPlay SDR Support plugin" ON)
+option(PLUGIN_SDRPLAY_SDR_SUPPORT "Enable SDRPlay SDR Support plugin" OFF)
 
 if(PLUGIN_SDRPLAY_SDR_SUPPORT)
   add_subdirectory(sdr_sources/sdrplay_sdr_support)
 endif()
 
-option(PLUGIN_PLUTOSDR_SDR_SUPPORT "Enable PlutoSDR SDR Support plugin" ON)
+option(PLUGIN_PLUTOSDR_SDR_SUPPORT "Enable PlutoSDR SDR Support plugin" OFF)
 
 if(PLUGIN_PLUTOSDR_SDR_SUPPORT)
   add_subdirectory(sdr_sources/plutosdr_sdr_support)
 endif()
 
-option(PLUGIN_BLADERF_SDR_SUPPORT "Enable BladeRF SDR Support plugin" ON)
+option(PLUGIN_BLADERF_SDR_SUPPORT "Enable BladeRF SDR Support plugin" OFF)
 
 if(PLUGIN_BLADERF_SDR_SUPPORT)
   add_subdirectory(sdr_sources/bladerf_sdr_support)
@@ -332,25 +332,25 @@ if(PLUGIN_RTLSDR_SDR_SUPPORT)
   add_subdirectory(sdr_sources/rtlsdr_sdr_support)
 endif()
 
-option(PLUGIN_MIRISDR_SDR_SUPPORT "Enable MiriSDR SDR Support plugin" ON)
+option(PLUGIN_MIRISDR_SDR_SUPPORT "Enable MiriSDR SDR Support plugin" OFF)
 
 if(PLUGIN_MIRISDR_SDR_SUPPORT)
   add_subdirectory(sdr_sources/mirisdr_sdr_support)
 endif()
 
-option(PLUGIN_SPYSERVER_SUPPORT "Enable SpyServer Support plugin" ON)
+option(PLUGIN_SPYSERVER_SUPPORT "Enable SpyServer Support plugin" OFF)
 
 if(PLUGIN_SPYSERVER_SUPPORT)
   add_subdirectory(sdr_sources/spyserver_support)
 endif()
 
-option(PLUGIN_RTLTCP_SUPPORT "Enable RTL-TCP Support plugin" ON)
+option(PLUGIN_RTLTCP_SUPPORT "Enable RTL-TCP Support plugin" OFF)
 
 if(PLUGIN_RTLTCP_SUPPORT)
   add_subdirectory(sdr_sources/rtltcp_support)
 endif()
 
-option(PLUGIN_SDRPP_SERVER_SUPPORT "Enable SDR++ Server Support plugin" ON)
+option(PLUGIN_SDRPP_SERVER_SUPPORT "Enable SDR++ Server Support plugin" OFF)
 
 if(PLUGIN_SDRPP_SERVER_SUPPORT)
   add_subdirectory(sdr_sources/sdrpp_server_support)
@@ -362,7 +362,7 @@ if(PLUGIN_AARONIA_SDR_SUPPORT)
   add_subdirectory(sdr_sources/aaronia_sdr_support)
 endif()
 
-option(PLUGIN_RFNM_SDR_SUPPORT "Enable RFNM Support plugin" ON)
+option(PLUGIN_RFNM_SDR_SUPPORT "Enable RFNM Support plugin" OFF)
 
 if(PLUGIN_RFNM_SDR_SUPPORT)
   add_subdirectory(sdr_sources/rfnm_sdr_support)
@@ -380,7 +380,13 @@ if(PLUGIN_NET_SOURCE_SDR_SUPPORT)
   add_subdirectory(sdr_sources/net_source_support)
 endif()
 
-option(PLUGIN_REMOTE_SDR_SUPPORT "Enable Remote SDR Support plugin (WIP!)" ON)
+option(PLUGIN_VRTZMQ_SOURCE_SDR_SUPPORT "Enable VRT ZMQ Source Support plugin" ON)
+
+if(PLUGIN_VRTZMQ_SOURCE_SDR_SUPPORT)
+  add_subdirectory(sdr_sources/vrtzmq_source_support)
+endif()
+
+option(PLUGIN_REMOTE_SDR_SUPPORT "Enable Remote SDR Support plugin (WIP!)" OFF)
 
 if(PLUGIN_REMOTE_SDR_SUPPORT)
   add_subdirectory(sdr_sources/remote_sdr_support)
