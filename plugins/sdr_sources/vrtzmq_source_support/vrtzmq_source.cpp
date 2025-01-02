@@ -8,8 +8,13 @@ void VrtzmqSource::VRTrecorderDrawPanelEvent(const satdump::RecorderDrawPanelEve
     if (ImGui::CollapsingHeader("VRT Context"))
     {
         ImGui::Text("Object : %s", tracker_ext_context.object_name);
-        ImGui::Text("Frequency : %f", tracker_ext_context.frequency+tracker_ext_context.doppler);
-        ImGui::Text("Doppler rate : %f", tracker_ext_context.doppler_rate);
+        ImGui::Text("Source : %s", tracker_ext_context.tracking_source);
+        ImGui::Text("Frequency : %.2f", tracker_ext_context.frequency+tracker_ext_context.doppler);
+        ImGui::Text("Doppler rate : %.4f", tracker_ext_context.doppler_rate);
+        ImGui::Text("Azimuth : %.2f", tracker_ext_context.azimuth);
+        ImGui::Text("Elevation : %.2f", tracker_ext_context.elevation);
+        ImGui::Text("SDR gain : %i", vrt_context.gain);
+        ImGui::Text("SDR Ref : %s", vrt_context.reflock ? "external" : "internal");
     }
 }
 
@@ -17,14 +22,17 @@ void VrtzmqSource::set_settings(nlohmann::json settings)
 {
     d_settings = settings;
     address = getValueOrDefault(d_settings["address"], address);
+    instance = getValueOrDefault(d_settings["instance"], instance);
     port = getValueOrDefault(d_settings["port"], port);
+    use_port = getValueOrDefault(d_settings["use_port"], use_port);
 }
 
 nlohmann::json VrtzmqSource::get_settings()
 {
-
     d_settings["address"] = address;
+    d_settings["instance"] = instance;
     d_settings["port"] = port;
+    d_settings["use_port"] = use_port;
     return d_settings;
 }
 
@@ -50,7 +58,7 @@ void VrtzmqSource::run_thread()
             if (vrt_packet.context) {
                 // vrt_print_context(&vrt_context);
                 if (not start_rx or vrt_context.context_changed) {
-                    logger->info("[VRT ZMQ] Set frequency to %f", (double)vrt_context.rf_freq);
+                    // logger->info("[VRT ZMQ] Set frequency to %.2f", (double)vrt_context.rf_freq);
                     satdump::eventBus->fire_event<satdump::RecorderSetDeviceSamplerateEvent>({vrt_context.sample_rate});
                     satdump::eventBus->fire_event<satdump::RecorderSetFrequencyEvent>({(double)vrt_context.rf_freq});
                 }
@@ -89,17 +97,23 @@ void VrtzmqSource::start()
     init_context(&vrt_context);
     uint32_t channel = 0;
     vrt_packet.channel_filt = 1<<channel;
+    uint16_t main_port;
+
+    if (use_port)
+        main_port = port;
+    else
+        main_port = DEFAULT_MAIN_PORT + MAX_CHANNELS*instance;
 
     // ZMQ
     context = zmq_ctx_new();
     subscriber = zmq_socket(context, ZMQ_SUB);
     int rc = zmq_setsockopt (subscriber, ZMQ_RCVHWM, &hwm, sizeof hwm);
-    std::string connect_string = "tcp://" + address + ":" + std::to_string(port);
+    std::string connect_string = "tcp://" + address + ":" + std::to_string(main_port);
     rc = zmq_connect(subscriber, connect_string.c_str());
     assert(rc == 0);
     zmq_setsockopt(subscriber, ZMQ_SUBSCRIBE, "", 0);
 
-    logger->info("Opening ZMQ to " + std::string("tcp://" + address + ":" + std::to_string(port)));
+    logger->info("Opening ZMQ to " + std::string("tcp://" + address + ":" + std::to_string(main_port)));
 
     DSPSampleSource::start();
 
@@ -140,7 +154,9 @@ void VrtzmqSource::drawControlUI()
     current_samplerate.draw();
 
     ImGui::InputText("Address", &address);
+    ImGui::InputInt("Instance", &instance);
     ImGui::InputInt("Port", &port);
+    ImGui::Checkbox("Use Port", &use_port);
 
     if (is_started)
         style::endDisabled();

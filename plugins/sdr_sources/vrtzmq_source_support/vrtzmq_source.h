@@ -21,6 +21,8 @@ protected:
 
     std::string address = "localhost";
     int port = 50100;
+    int instance = 0;
+    bool use_port = false;
 
     // VRT ZMQ
     void *context;
