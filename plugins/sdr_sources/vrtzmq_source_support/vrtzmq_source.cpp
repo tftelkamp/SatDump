@@ -7,8 +7,8 @@ void VrtzmqSource::VRTrecorderDrawPanelEvent(const satdump::RecorderDrawPanelEve
 {
     if (ImGui::CollapsingHeader("VRT Context"))
     {
-        ImGui::Text("Object : %s", tracker_ext_context.object_name);
-        ImGui::Text("Source : %s", tracker_ext_context.tracking_source);
+        ImGui::Text("Object : %.32s", tracker_ext_context.object_name);
+        ImGui::Text("Source : %.32s", tracker_ext_context.tracking_source);
         ImGui::Text("Frequency : %.2f", tracker_ext_context.frequency+tracker_ext_context.doppler);
         ImGui::Text("Doppler rate : %.4f", tracker_ext_context.doppler_rate);
         ImGui::Text("Azimuth : %.2f", tracker_ext_context.azimuth);
