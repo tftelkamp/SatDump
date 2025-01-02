@@ -43,8 +43,6 @@ int main(int argc, char *argv[])
 
     reedsolomon::ReedSolomon rs_check(reedsolomon::RS223);
 
-    std::vector<uint16_t> msi_channel;
-
     while (!data_in.eof())
     {
         // Read buffer
@@ -59,44 +57,30 @@ int main(int argc, char *argv[])
         // Parse this transport frame
         ccsds::ccsds_tm::VCDU vcdu = ccsds::ccsds_tm::parseVCDU(cadu);
 
-        // printf("VCID %d\n", vcdu.vcid);
+        printf("VCID %d\n", vcdu.vcid);
 
-        if (vcdu.vcid == 6)
+        if (vcdu.vcid == 1)
         {
             auto pkts = vcid_demuxer.work(cadu);
 
             for (auto pkt : pkts)
             {
-                // printf("APID %d \n", pkt.header.apid);
-                if (pkt.header.apid == 1228)
+                printf("APID %d \n", pkt.header.apid);
+                if (pkt.header.apid == 1031)
                 {
                     // 1027 ?
                     // 1028 ?
                     // 1031 !!!!!
                     // 1032 !!!!!
 
-                    printf("APID %d SIZE %d\n", pkt.header.apid, pkt.payload.size());
+                    //  printf("APID %d SIZE %d\n", pkt.header.apid, pkt.payload.size());
 
-                    pkt.payload.resize(3000);
+                    pkt.payload.resize(1000);
 
-                    int id = pkt.payload[23];
-
-                    if (id == 0)
-                    {
-                        test_t.write((char *)pkt.header.raw, 6);
-                        test_t.write((char *)pkt.payload.data(), pkt.payload.size());
-
-                        for (int i = 0; i < 218; i++)
-                        {
-                            uint16_t val = pkt.payload[28 + i * 2 + 0] << 8 | pkt.payload[28 + i * 2 + 1];
-                            msi_channel.push_back(val);
-                        }
-                    }
+                    test_t.write((char *)pkt.header.raw, 6);
+                    test_t.write((char *)pkt.payload.data(), pkt.payload.size());
                 }
             }
         }
     }
-
-    image::Image img(msi_channel.data(), 16, 218, msi_channel.size() / 218, 1);
-    image::save_png(img, "test_earthcare.png");
 }
