@@ -59,8 +59,15 @@ void VrtzmqSource::run_thread()
                 // vrt_print_context(&vrt_context);
                 if (not start_rx or vrt_context.context_changed) {
                     // logger->info("[VRT ZMQ] Set frequency to %.2f", (double)vrt_context.rf_freq);
-                    satdump::eventBus->fire_event<satdump::RecorderSetDeviceSamplerateEvent>({vrt_context.sample_rate});
-                    satdump::eventBus->fire_event<satdump::RecorderSetFrequencyEvent>({(double)vrt_context.rf_freq});
+                    if (current_samplerate.get() != vrt_context.sample_rate) {
+                        satdump::eventBus->fire_event<satdump::RecorderStopDeviceEvent>({});
+                        satdump::eventBus->fire_event<satdump::RecorderSetFrequencyEvent>({(double)vrt_context.rf_freq});
+                        satdump::eventBus->fire_event<satdump::RecorderSetDeviceSamplerateEvent>({vrt_context.sample_rate});
+                        satdump::eventBus->fire_event<satdump::RecorderStartDeviceEvent>({});
+                    } else {
+                        satdump::eventBus->fire_event<satdump::RecorderSetFrequencyEvent>({(double)vrt_context.rf_freq});
+                        satdump::eventBus->fire_event<satdump::RecorderSetDeviceSamplerateEvent>({vrt_context.sample_rate});
+                    }
                 }
                 start_rx = true;
             }
@@ -70,7 +77,7 @@ void VrtzmqSource::run_thread()
                     memcpy(&re, (char*)&buffer[vrt_packet.offset+i], 2);
                     int16_t img;
                     memcpy(&img, (char*)&buffer[vrt_packet.offset+i]+2, 2);
-                    // convert to float32
+                    // convert to float32 and normalize
                     float_data[2*i] = (float)re / 65535;
                     float_data[2*i+1] = (float)img / 65535;
                 }
